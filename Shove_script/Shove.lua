@@ -1,12 +1,17 @@
 player = GetPlayerPed(-1)
 Citizen.CreateThread(function()
   while true do
-    if IsControlJustReleased(1, 288) then
+    if IsControlJustReleased(1, 288) then -- F1
+
       look_dir = GetEntityHeading(player)
+
       front_space_coord = 0
+
       x1, y1, z1 = table.unpack(GetEntityCoords(player))
+
       x = 0 
       y = 0
+
       if look_dir < 22.5 or look_dir > 337.5 then
         x = 5;
         y = 0;
@@ -44,13 +49,15 @@ Citizen.CreateThread(function()
         y1 = y1+1;
         x1 = x1+1;
       end
-      print(x1,y1,z1)
+
       front_space_coord = vector3(x1, y1, z1)
+
       if Vdist2(GetEntityCoords(GetPlayerPed(GetNearestPlayerToEntity(player))), front_space_coord) < 2 then
         target = GetPlayerPed(GetNearestPlayerToEntity(player));
       else
         target = GetRandomPedAtCoord(GetEntityCoords(player), 1.0, 1.0, 1.0, -1);
       end
+
       local force_multiplier = 0.5
       local forceType = 1
       local direction = vector3(y*force_multiplier, x*force_multiplier, 0.0)
@@ -95,7 +102,6 @@ Citizen.CreateThread(function()
           )
         end
       end
-    print(GetRandomPedAtCoord(GetEntityCoords(player), 9.0, 9.0, 9.0, -1))
     Citizen.Wait(1)
   end
 end)
