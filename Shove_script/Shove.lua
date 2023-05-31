@@ -1,66 +1,45 @@
 player = GetPlayerPed(-1)
+
+function GetPlayerLookingVector(playerped, radius)
+	local yaw = GetEntityHeading(playerped)
+	local pitch = 90.0-GetGameplayCamRelativePitch()
+
+	if yaw > 180 then
+		yaw = yaw - 360
+	elseif yaw < -180 then
+		yaw = yaw + 360
+	end
+
+	local pitch = pitch * math.pi / 180
+	local yaw = yaw * math.pi / 180
+	local x = radius * math.sin(pitch) * math.sin(yaw)
+	local y = radius * math.sin(pitch) * math.cos(yaw)
+	local z = radius * math.cos(pitch)
+
+	local playerpedcoords = GetEntityCoords(playerped)
+	local xcorr = -x+ playerpedcoords.x
+	local ycorr = y+ playerpedcoords.y
+	local zcorr = z+ playerpedcoords.z
+	local Vector = vector3(tonumber(xcorr), tonumber(ycorr), tonumber(zcorr))
+	return Vector
+end
+
 Citizen.CreateThread(function()
   while true do
     if IsControlJustReleased(1, 288) then -- F1
 
-      look_dir = GetEntityHeading(player)
-
-      front_space_coord = 0
-
-      x1, y1, z1 = table.unpack(GetEntityCoords(player))
-
-      x = 0 
-      y = 0
-
-      if look_dir < 22.5 or look_dir > 337.5 then
-        x = 5;
-        y = 0;
-        x1 = x1+2
-      elseif look_dir > 22.5 and look_dir < 67.5 then
-        x = 2.5;
-        y = -2.5;
-        y1 = y1-1;
-        x1 = x1+1;
-      elseif look_dir > 67.5 and look_dir < 112.5 then
-        x = 0;
-        y = -5;
-        y1 = y1-2;
-      elseif look_dir > 112.5 and look_dir < 157.5 then
-        x = -2.5;
-        y = -2.5;
-        y1 = y1-1;
-        x1 = x1-1;
-      elseif look_dir > 157.5 and look_dir < 202.5 then
-        x = -5;
-        y = 0;
-        x1 = x1-2
-      elseif look_dir > 202.5 and look_dir < 247.5 then
-        x = -2.5;
-        y = 2.5;
-        y1 = y1+1;
-        x1 = x1-1;
-      elseif look_dir > 247.5 and look_dir < 292.5 then 
-        x = 0;
-        y = 5;
-        y1 = y1+2;
-      else
-        x = 2.5;
-        y = 2.5;
-        y1 = y1+1;
-        x1 = x1+1;
+      function GetPedInDirection(coordFrom, coordTo)
+        local rayHandle = StartShapeTestRay(coordFrom.x, coordFrom.y, coordFrom.z, coordTo.x, coordTo.y, coordTo.z, 4, GetPlayerPed(-1), 0)
+        local _,flag_PedHit,PedCoords,_,PedHit = GetShapeTestResult(rayHandle)
+        return flag_PedHit, PedCoords, PedHit
       end
 
-      front_space_coord = vector3(x1, y1, z1)
+      flag_PedHit, PedCoords, target = GetPedInDirection(GetEntityCoords(player), GetPlayerLookingVector(player, 3))
 
-      if Vdist2(GetEntityCoords(GetPlayerPed(GetNearestPlayerToEntity(player))), front_space_coord) < 2 then
-        target = GetPlayerPed(GetNearestPlayerToEntity(player));
-      else
-        target = GetRandomPedAtCoord(GetEntityCoords(player), 1.0, 1.0, 1.0, -1);
-      end
-
-      local force_multiplier = 0.5
+      local x, y = table.unpack(GetEntityForwardVector(player))
+      local force = 1.5
       local forceType = 1
-      local direction = vector3(y*force_multiplier, x*force_multiplier, 0.0)
+      local direction = vector3(x*force, y*force, 0.0)
       local rotation = vector3(0.0, 0.0, 0.0)
       local boneIndex = 10
       local isDirectionRel = false
@@ -80,7 +59,7 @@ Citizen.CreateThread(function()
 
         ClearPedTasks(player)
 
-        TaskPlayAnim(player, anim_dict, anim_clip, 4.0, 4.0, -1, 48, 0.0)
+        TaskPlayAnim(player, anim_dict, anim_clip, 4.0, 4.0, 2000, 48, 0.0)
         
         RemoveAnimDict(anim_dict)
 
