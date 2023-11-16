@@ -24,15 +24,15 @@ function GetPlayerLookingVector(playerped, radius)
 	return Vector
 end
 
-Citizen.CreateThread(function()
-  while true do
-    if IsControlJustReleased(1, 288) then -- F1
-
-      function GetPedInDirection(coordFrom, coordTo)
+     function GetPedInDirection(coordFrom, coordTo)
         local rayHandle = StartShapeTestRay(coordFrom.x, coordFrom.y, coordFrom.z, coordTo.x, coordTo.y, coordTo.z, 4, GetPlayerPed(-1), 0)
         local _,flag_PedHit,PedCoords,_,PedHit = GetShapeTestResult(rayHandle)
         return flag_PedHit, PedCoords, PedHit
       end
+
+Citizen.CreateThread(function()
+  while true do
+    if IsControlJustReleased(1, 288) then -- F1
 
       flag_PedHit, PedCoords, target = GetPedInDirection(GetEntityCoords(player), GetPlayerLookingVector(player, 3))
 
