@@ -1,10 +1,10 @@
 version '1.1.0'
-author 'Arckant#0815'
+author 'arckant'
 repository 'https://github.com/Arckant/Shove_script'
 
 resource_type 'client_script' { name = 'Shove' }
 
-client_script 'Shove.lua'
+client_script 'client.lua'
 
 game 'gta5'
 fx_version 'cerulean'
