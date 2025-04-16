@@ -27,7 +27,6 @@ RegisterNetEvent('ShoveImpact', function(looking_vector)
 	local force
 	local duration
 	if GetPedStealthMovement(player) then force = 1.0 duration = 200 else force = 2.5 duration = 700 end
-	print(GetPedStealthMovement(player))
 	
 	SetPedToRagdoll(player, 0, duration, 3)
 
