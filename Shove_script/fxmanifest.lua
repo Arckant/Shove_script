@@ -1,6 +1,6 @@
 version '1.1.0'
 author 'arckant'
-repository 'https://github.com/citizenfx/cfx-server-data'
+repository 'https://github.com/Arckant/Shove_script'
 
 resource_type 'client_script' { name = 'Shove' }
 
