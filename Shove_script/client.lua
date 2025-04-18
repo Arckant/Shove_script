@@ -4,8 +4,13 @@ RegisterCommand('Shove', function()
 	local _, _, _, _, target = GetShapeTestResult(StartShapeTestRay(GetEntityCoords(player), GetOffsetFromEntityInWorldCoords(player, 0.0, 1.0, 0.0), 4, player, 0))
 	if not IsEntityAPed(target) then return end
 	
-	RequestAnimDict("reaction@shove")
- 	while not HasAnimDictLoaded("reaction@shove") do Citizen.Wait(10) end
+	local i = 0
+	RequestAnimDict('reaction@shove')
+	while not HasAnimDictLoaded('reaction@shove') and i < 30 do
+		i = i + 1
+		Citizen.Wait(10)
+	end
+	if not HasAnimDictLoaded('reaction@shove') then return end
 
 	ClearPedTasks(player)
 	TaskPlayAnim(player, 'reaction@shove', 'shove_var_c', 4.0, 4.0, 2000, 48, 0.0)
@@ -14,8 +19,6 @@ RegisterCommand('Shove', function()
 	local looking_vector = GetEntityForwardVector(player)
 
 	TriggerServerEvent('Shove', targetid, player, looking_vector)
-
-	Citizen.Wait(300)
 
 	RemoveAnimDict('reaction@shove')
 
@@ -43,3 +46,5 @@ RegisterNetEvent('ShoveImpact', function(looking_vector)
 		true
 	)
 end)
+
+ 
